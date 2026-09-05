@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: vicky-web-fix-api
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: vicky-web-fix-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DEFAULT_JOB_EARNING
+        value: "0"
+      - key: ADMIN_NAME
+        value: "Vicky Web Fix Admin"
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+
+databases:
+  - name: vicky-web-fix-db
+  plan: free
