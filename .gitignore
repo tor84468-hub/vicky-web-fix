@@ -27,3 +27,4 @@ backend/.env
 backend/vicky_web_fix.json
 .env
 .env.*
+!.env.example
