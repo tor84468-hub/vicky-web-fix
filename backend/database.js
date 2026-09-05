@@ -1,65 +1,92 @@
-const fs = require("fs");
-const path = require("path");
+const { Pool } = require("pg");
 
-const DB_FILE = path.join(__dirname, "vicky_web_fix.json");
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL
+    ? { rejectUnauthorized: false }
+    : false,
+});
 
-const defaultDatabase = {
-  workers: []
-};
+async function query(text, params = []) {
+  return pool.query(text, params);
+}
 
-function loadDatabase() {
-  if (!fs.existsSync(DB_FILE)) {
-    fs.writeFileSync(
-      DB_FILE,
-      JSON.stringify(defaultDatabase, null, 2)
+async function initDatabase() {
+  await query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer',
+      status TEXT NOT NULL DEFAULT 'active',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
-  }
 
-  try {
-    return JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
-  } catch {
-    return { ...defaultDatabase };
-  }
-}
+    CREATE TABLE IF NOT EXISTS worker_profiles (
+      user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+      worker_id TEXT UNIQUE NOT NULL,
+      skills JSONB NOT NULL DEFAULT '[]'::jsonb,
+      completed_jobs INTEGER NOT NULL DEFAULT 0,
+      total_earnings NUMERIC(12,2) NOT NULL DEFAULT 0,
+      available BOOLEAN NOT NULL DEFAULT true,
+      approved_at TIMESTAMPTZ
+    );
 
-function saveDatabase(data) {
-  fs.writeFileSync(
-    DB_FILE,
-    JSON.stringify(data, null, 2)
-  );
-}
+    CREATE TABLE IF NOT EXISTS jobs (
+      id SERIAL PRIMARY KEY,
+      job_id TEXT UNIQUE NOT NULL,
+      customer_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      title TEXT NOT NULL,
+      website_url TEXT,
+      description TEXT NOT NULL,
+      required_skills JSONB NOT NULL DEFAULT '[]'::jsonb,
+      status TEXT NOT NULL DEFAULT 'pending',
+      assigned_worker_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      worker_message TEXT,
+      completion_message TEXT,
+      completed_at TIMESTAMPTZ,
+      approved_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
 
-function getWorkers() {
-  return loadDatabase().workers;
-}
+    CREATE TABLE IF NOT EXISTS earnings (
+      id SERIAL PRIMARY KEY,
+      worker_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      job_id INTEGER REFERENCES jobs(id) ON DELETE SET NULL,
+      amount NUMERIC(12,2) NOT NULL,
+      type TEXT NOT NULL DEFAULT 'job',
+      description TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
 
-function findWorkerByEmail(email) {
-  return getWorkers().find(
-    (worker) => worker.email === email
-  );
-}
+    CREATE TABLE IF NOT EXISTS payout_requests (
+      id SERIAL PRIMARY KEY,
+      payout_id TEXT UNIQUE NOT NULL,
+      worker_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      amount NUMERIC(12,2) NOT NULL,
+      method TEXT NOT NULL,
+      account_details TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
+      admin_note TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      processed_at TIMESTAMPTZ
+    );
 
-function findWorkerById(workerId) {
-  return getWorkers().find(
-    (worker) => worker.worker_id === workerId
-  );
-}
-
-function addWorker(worker) {
-  const data = loadDatabase();
-  data.workers.push(worker);
-  saveDatabase(data);
-  return worker;
-}
-
-function countWorkers() {
-  return getWorkers().length;
+    CREATE TABLE IF NOT EXISTS job_events (
+      id SERIAL PRIMARY KEY,
+      job_id INTEGER NOT NULL REFERENCES jobs(id) ON DELETE CASCADE,
+      actor_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+      event TEXT NOT NULL,
+      note TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
 }
 
 module.exports = {
-  getWorkers,
-  findWorkerByEmail,
-  findWorkerById,
-  addWorker,
-  countWorkers
+  pool,
+  query,
+  initDatabase,
 };
