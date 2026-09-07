@@ -36,3 +36,12 @@ backend/server.build17-backup.js
 src/App.build16-backup.jsx
 src/App.build17-before-marketplace.jsx
 src/App.css.build16-backup.css
+.env*
+
+# Worker dashboard safety backups
+src/App.worker-safe.jsx
+src/App.css.worker-safe.css
+
+# Worker dashboard safety backups
+src/App.worker-safe.jsx
+src/App.css.worker-safe.css

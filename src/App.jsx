@@ -1323,287 +1323,516 @@ function App() {
       )}
 
       {page === "worker" && user?.role === "worker" && (
-        <main className="dashboard-page">
-          <div className="dashboard-header">
-            <div>
-              <span className="eyebrow">
-                WORKER DASHBOARD
-              </span>
-              <h1>
-                Welcome, {user.name || "Worker"}.
-              </h1>
-              <p>
-                Find projects, complete work and track
-                your earnings.
-              </p>
-            </div>
+        <main className="worker-dashboard">
+          <div className="worker-shell">
 
-            <button
-              className="secondary-button"
-              onClick={loadWorkerData}
-            >
-              Refresh
-            </button>
-          </div>
-
-          <section className="dashboard-grid">
-            <div className="stat-card">
-              <strong>
-                {balance.toLocaleString()}
-              </strong>
-              <span>Earnings Balance</span>
-            </div>
-
-            <div className="stat-card">
-              <strong>
-                {
-                  workerJobs.filter(
-                    (job) =>
-                      job.status === "accepted"
-                  ).length
-                }
-              </strong>
-              <span>Active Jobs</span>
-            </div>
-
-            <div className="stat-card">
-              <strong>
-                {
-                  earnings.length
-                }
-              </strong>
-              <span>Earning Records</span>
-            </div>
-          </section>
-
-          <section className="status-banner">
-            <div>
-              <span className="eyebrow">
-                WORKER STATUS
-              </span>
-              <h3>
-                {user.status === "approved"
-                  ? "Approved — ready for work"
-                  : user.status === "suspended"
-                  ? "Account suspended"
-                  : "Awaiting admin approval"}
-              </h3>
-            </div>
-
-            <span className="status">
-              {user.status || "pending"}
-            </span>
-          </section>
-
-          <section className="list-section">
-            <div className="section-heading compact">
-              <span className="eyebrow">
-                PROJECTS
-              </span>
-              <h2>Available & active jobs</h2>
-            </div>
-
-            {workerJobs.length === 0 ? (
-              <div className="empty-state">
-                <h3>No jobs available.</h3>
-                <p>
-                  New approved projects will appear
-                  here when available.
-                </p>
+            <aside className="worker-sidebar">
+              <div className="worker-brand">
+                <div className="worker-brand-mark">V</div>
+                <div>
+                  <strong>Vicky Web Fix</strong>
+                  <span>Worker Portal</span>
+                </div>
               </div>
-            ) : (
-              <div className="job-list">
-                {workerJobs.map((job) => (
-                  <article
-                    className="job-card"
-                    key={`${job.id}-${job.source}`}
-                  >
-                    <div>
-                      <span className="status">
-                        {job.status}
-                      </span>
 
-                      <h3>{job.title}</h3>
-
-                      {job.website_url && (
-                        <p>
-                          {job.website_url}
-                        </p>
-                      )}
-
-                      <p>{job.description}</p>
-
-                      {job.required_skills && (
-                        <div className="skill-tags">
-                          {(Array.isArray(
-                            job.required_skills
-                          )
-                            ? job.required_skills
-                            : []
-                          ).map((skill) => (
-                            <span key={skill}>
-                              {skill}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="job-actions">
-                      {job.status === "approved" &&
-                        job.source ===
-                          "available" && (
-                          <button
-                            className="primary-button"
-                            onClick={() =>
-                              workerAction(
-                                job.id,
-                                "accept"
-                              )
-                            }
-                            disabled={loading}
-                          >
-                            Accept Job
-                          </button>
-                        )}
-
-                      {job.status === "accepted" && (
-                        <button
-                          className="primary-button"
-                          onClick={() => {
-                            const message =
-                              window.prompt(
-                                "Add a completion message:"
-                              );
-
-                            if (message !== null) {
-                              workerAction(
-                                job.id,
-                                "complete",
-                                { message }
-                              );
-                            }
-                          }}
-                          disabled={loading}
-                        >
-                          Submit Completion
-                        </button>
-                      )}
-                    </div>
-                  </article>
-                ))}
-              </div>
-            )}
-          </section>
-
-          <section className="earnings-section">
-            <div className="section-heading compact">
-              <span className="eyebrow">
-                EARNINGS
-              </span>
-              <h2>Request a payout</h2>
-            </div>
-
-            <div className="payout-layout">
-              <form
-                className="form-card"
-                onSubmit={submitPayout}
-              >
-                <label>
-                  Amount
-                  <input
-                    type="number"
-                    min="0.01"
-                    step="0.01"
-                    value={payoutForm.amount}
-                    onChange={(e) =>
-                      setPayoutForm({
-                        ...payoutForm,
-                        amount: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </label>
-
-                <label>
-                  Payout method
-                  <input
-                    placeholder="Bank transfer, mobile money, etc."
-                    value={payoutForm.method}
-                    onChange={(e) =>
-                      setPayoutForm({
-                        ...payoutForm,
-                        method: e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </label>
-
-                <label>
-                  Account details
-                  <textarea
-                    rows="4"
-                    placeholder="Enter the details needed to process your payout."
-                    value={
-                      payoutForm.accountDetails
-                    }
-                    onChange={(e) =>
-                      setPayoutForm({
-                        ...payoutForm,
-                        accountDetails:
-                          e.target.value,
-                      })
-                    }
-                    required
-                  />
-                </label>
+              <nav className="worker-nav">
+                <button className="worker-nav-item active">
+                  <span>▦</span>
+                  Dashboard
+                </button>
 
                 <button
-                  className="primary-button"
+                  className="worker-nav-item"
+                  onClick={() =>
+                    document
+                      .getElementById("worker-projects")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  <span>◫</span>
+                  Projects
+                </button>
+
+                <button
+                  className="worker-nav-item"
+                  onClick={() =>
+                    document
+                      .getElementById("worker-earnings")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  <span>↗</span>
+                  Earnings
+                </button>
+
+                <button
+                  className="worker-nav-item"
+                  onClick={() =>
+                    document
+                      .getElementById("worker-profile")
+                      ?.scrollIntoView({ behavior: "smooth" })
+                  }
+                >
+                  <span>◯</span>
+                  Profile
+                </button>
+              </nav>
+
+              <div className="worker-sidebar-bottom">
+                <div className="worker-mini-profile">
+                  <div className="worker-avatar">
+                    {(user.name || "W").charAt(0).toUpperCase()}
+                  </div>
+
+                  <div>
+                    <strong>{user.name || "Worker"}</strong>
+                    <span>
+                      {user.status === "approved"
+                        ? "Verified worker"
+                        : "Pending approval"}
+                    </span>
+                  </div>
+                </div>
+
+                <button className="worker-logout" onClick={logout}>
+                  Sign out
+                </button>
+              </div>
+            </aside>
+
+            <section className="worker-main">
+
+              <header className="worker-topbar">
+                <div>
+                  <span className="eyebrow">WORKER WORKSPACE</span>
+
+                  <h1>
+                    Welcome back, {user.name || "Worker"}
+                  </h1>
+
+                  <p>
+                    Manage your projects, track your work and monitor
+                    your earnings.
+                  </p>
+                </div>
+
+                <button
+                  className="worker-refresh"
+                  onClick={loadWorkerData}
                   disabled={loading}
                 >
-                  Request Payout
+                  ↻ Refresh
                 </button>
-              </form>
+              </header>
 
-              <div className="earnings-list">
-                <h3>Earning history</h3>
+              <section className="worker-status-card">
+                <div className="worker-status-icon">
+                  {user.status === "approved" ? "✓" : "!"}
+                </div>
 
-                {earnings.length === 0 ? (
-                  <p className="muted">
-                    No earnings recorded yet.
+                <div className="worker-status-content">
+                  <span className="eyebrow">ACCOUNT STATUS</span>
+
+                  <h2>
+                    {user.status === "approved"
+                      ? "Your worker account is approved"
+                      : user.status === "suspended"
+                      ? "Your account is suspended"
+                      : "Your account is awaiting approval"}
+                  </h2>
+
+                  <p>
+                    {user.status === "approved"
+                      ? "You can now review available projects and accept work that matches your skills."
+                      : user.status === "suspended"
+                      ? "Your access to worker projects has been temporarily suspended."
+                      : "Our team needs to approve your worker profile before you can accept projects."}
                   </p>
-                ) : (
-                  earnings.map((earning) => (
-                    <div
-                      className="earning-row"
-                      key={earning.id}
-                    >
-                      <div>
-                        <strong>
-                          {earning.description}
-                        </strong>
-                        <small>
-                          {earning.created_at}
-                        </small>
-                      </div>
+                </div>
 
-                      <strong>
-                        {Number(
-                          earning.amount
-                        ).toLocaleString()}
-                      </strong>
-                    </div>
-                  ))
+                <span
+                  className={`worker-status-pill ${
+                    user.status || "pending"
+                  }`}
+                >
+                  {user.status || "pending"}
+                </span>
+              </section>
+
+              <section className="worker-metrics">
+                <article className="worker-metric-card">
+                  <div className="metric-icon">₦</div>
+
+                  <div>
+                    <span>Total earnings</span>
+
+                    <strong>
+                      {Number(balance || 0).toLocaleString()}
+                    </strong>
+                  </div>
+                </article>
+
+                <article className="worker-metric-card">
+                  <div className="metric-icon">◫</div>
+
+                  <div>
+                    <span>Active projects</span>
+
+                    <strong>
+                      {
+                        workerJobs.filter(
+                          (job) => job.status === "accepted"
+                        ).length
+                      }
+                    </strong>
+                  </div>
+                </article>
+
+                <article className="worker-metric-card">
+                  <div className="metric-icon">✓</div>
+
+                  <div>
+                    <span>Earning records</span>
+
+                    <strong>{earnings.length}</strong>
+                  </div>
+                </article>
+              </section>
+
+              <section
+                className="worker-content-card"
+                id="worker-projects"
+              >
+                <div className="worker-section-header">
+                  <div>
+                    <span className="eyebrow">OPPORTUNITIES</span>
+
+                    <h2>Projects</h2>
+
+                    <p>
+                      Review available projects and manage work
+                      assigned to you.
+                    </p>
+                  </div>
+
+                  <span className="worker-count">
+                    {workerJobs.length}{" "}
+                    {workerJobs.length === 1
+                      ? "project"
+                      : "projects"}
+                  </span>
+                </div>
+
+                {workerJobs.length === 0 ? (
+                  <div className="worker-empty">
+                    <div className="worker-empty-icon">◫</div>
+
+                    <h3>No projects available</h3>
+
+                    <p>
+                      New approved projects that match your worker
+                      access will appear here.
+                    </p>
+
+                    <button
+                      className="worker-refresh"
+                      onClick={loadWorkerData}
+                    >
+                      Check again
+                    </button>
+                  </div>
+                ) : (
+                  <div className="professional-job-list">
+                    {workerJobs.map((job) => (
+                      <article
+                        className="professional-job-card"
+                        key={`${job.id}-${job.source}`}
+                      >
+                        <div className="job-card-main">
+                          <div className="job-card-heading">
+                            <span
+                              className={`job-status ${
+                                job.status
+                              }`}
+                            >
+                              {job.status}
+                            </span>
+
+                            <span className="job-id">
+                              JOB-{String(job.id).padStart(5, "0")}
+                            </span>
+                          </div>
+
+                          <h3>{job.title}</h3>
+
+                          {job.website_url && (
+                            <p className="job-website">
+                              {job.website_url}
+                            </p>
+                          )}
+
+                          <p className="job-description">
+                            {job.description}
+                          </p>
+
+                          {Array.isArray(job.required_skills) &&
+                            job.required_skills.length > 0 && (
+                              <div className="professional-skills">
+                                {job.required_skills.map((skill) => (
+                                  <span key={skill}>{skill}</span>
+                                ))}
+                              </div>
+                            )}
+                        </div>
+
+                        <div className="professional-job-actions">
+                          {job.status === "approved" &&
+                            job.source === "available" && (
+                              <button
+                                className="worker-primary-button"
+                                onClick={() =>
+                                  workerAction(
+                                    job.id,
+                                    "accept"
+                                  )
+                                }
+                                disabled={loading}
+                              >
+                                Accept project
+                              </button>
+                            )}
+
+                          {job.status === "accepted" && (
+                            <button
+                              className="worker-primary-button"
+                              onClick={() => {
+                                const message = window.prompt(
+                                  "Add a completion message:"
+                                );
+
+                                if (message !== null) {
+                                  workerAction(
+                                    job.id,
+                                    "complete",
+                                    { message }
+                                  );
+                                }
+                              }}
+                              disabled={loading}
+                            >
+                              Submit completion
+                            </button>
+                          )}
+
+                          {job.status ===
+                            "completed_pending_approval" && (
+                            <span className="job-awaiting">
+                              Awaiting client approval
+                            </span>
+                          )}
+                        </div>
+                      </article>
+                    ))}
+                  </div>
                 )}
-              </div>
-            </div>
-          </section>
+              </section>
+
+              <section
+                className="worker-content-card"
+                id="worker-earnings"
+              >
+                <div className="worker-section-header">
+                  <div>
+                    <span className="eyebrow">FINANCIALS</span>
+
+                    <h2>Earnings & payout</h2>
+
+                    <p>
+                      Review your earnings and submit a payout request.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="worker-financial-grid">
+                  <div className="worker-balance-panel">
+                    <span>Available earnings</span>
+
+                    <strong>
+                      {Number(balance || 0).toLocaleString()}
+                    </strong>
+
+                    <small>
+                      Your balance updates after approved project
+                      completion.
+                    </small>
+                  </div>
+
+                  <form
+                    className="professional-payout-form"
+                    onSubmit={submitPayout}
+                  >
+                    <h3>Request payout</h3>
+
+                    <label>
+                      Amount
+
+                      <input
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        placeholder="Enter amount"
+                        value={payoutForm.amount}
+                        onChange={(e) =>
+                          setPayoutForm({
+                            ...payoutForm,
+                            amount: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Payout method
+
+                      <input
+                        placeholder="Bank transfer, mobile money..."
+                        value={payoutForm.method}
+                        onChange={(e) =>
+                          setPayoutForm({
+                            ...payoutForm,
+                            method: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </label>
+
+                    <label>
+                      Account details
+
+                      <textarea
+                        rows="3"
+                        placeholder="Enter the details required to process your payout."
+                        value={payoutForm.accountDetails}
+                        onChange={(e) =>
+                          setPayoutForm({
+                            ...payoutForm,
+                            accountDetails: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </label>
+
+                    <button
+                      className="worker-primary-button"
+                      disabled={loading}
+                    >
+                      Request payout
+                    </button>
+                  </form>
+                </div>
+
+                <div className="worker-history">
+                  <div className="worker-history-header">
+                    <h3>Earning history</h3>
+
+                    <span>
+                      {earnings.length} records
+                    </span>
+                  </div>
+
+                  {earnings.length === 0 ? (
+                    <div className="worker-history-empty">
+                      No earnings recorded yet.
+                    </div>
+                  ) : (
+                    <div className="professional-earning-list">
+                      {earnings.map((earning) => (
+                        <div
+                          className="professional-earning-row"
+                          key={earning.id}
+                        >
+                          <div className="earning-icon">
+                            +
+                          </div>
+
+                          <div className="earning-details">
+                            <strong>
+                              {earning.description}
+                            </strong>
+
+                            <small>
+                              {earning.created_at}
+                            </small>
+                          </div>
+
+                          <strong className="earning-amount">
+                            +
+                            {Number(
+                              earning.amount
+                            ).toLocaleString()}
+                          </strong>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </section>
+
+              <section
+                className="worker-profile-card"
+                id="worker-profile"
+              >
+                <div className="worker-profile-avatar">
+                  {(user.name || "W")
+                    .charAt(0)
+                    .toUpperCase()}
+                </div>
+
+                <div className="worker-profile-info">
+                  <span className="eyebrow">
+                    WORKER PROFILE
+                  </span>
+
+                  <h2>{user.name || "Worker"}</h2>
+
+                  <p>{user.email}</p>
+
+                  <div className="profile-status">
+                    <span
+                      className={`worker-status-dot ${
+                        user.status || "pending"
+                      }`}
+                    ></span>
+
+                    {user.status === "approved"
+                      ? "Verified worker"
+                      : "Profile pending approval"}
+                  </div>
+                </div>
+
+                <div className="worker-profile-note">
+                  <strong>Keep your profile professional</strong>
+
+                  <p>
+                    Your skills help our team match you with suitable
+                    website projects.
+                  </p>
+                </div>
+              </section>
+
+              <footer className="worker-dashboard-footer">
+                <span>Vicky Web Fix</span>
+                <span>Professional worker platform</span>
+              </footer>
+
+            </section>
+          </div>
         </main>
       )}
-
+      
       {page === "admin" && user?.role === "admin" && (
         <main className="dashboard-page">
           <div className="dashboard-header">
