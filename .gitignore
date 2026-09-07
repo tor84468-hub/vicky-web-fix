@@ -30,3 +30,9 @@ backend/vicky_web_fix.json
 !.env.example
 
 backend.build14-backup/
+
+# Local build backups
+backend/server.build17-backup.js
+src/App.build16-backup.jsx
+src/App.build17-before-marketplace.jsx
+src/App.css.build16-backup.css
