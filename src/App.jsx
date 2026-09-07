@@ -621,22 +621,25 @@ function App() {
       )}
 
       {page === "home" && (
-        <main>
-          <section className="hero">
+        <main className="home-page">
+
+          <section className="hero hero-premium">
             <div className="hero-copy">
-              <div className="eyebrow">
-                WEBSITE REPAIR & SUPPORT
+              <div className="hero-badge">
+                <span className="live-dot"></span>
+                WEBSITE SUPPORT PLATFORM
               </div>
 
               <h1>
-                Your website should work for you.
+                We fix websites.
+                <br />
+                <span>Workers build the future.</span>
               </h1>
 
-              <p>
-                Vicky Web Fix helps businesses,
-                creators and individuals solve website
-                problems, improve their online presence
-                and connect with skilled web workers.
+              <p className="hero-lead">
+                Vicky Web Fix connects people and businesses
+                who need website help with skilled workers who
+                are ready to get the job done.
               </p>
 
               <div className="hero-actions">
@@ -652,62 +655,120 @@ function App() {
                     }
                   }}
                 >
-                  Get a Free Check
+                  Get Website Help
                 </button>
 
                 <button
                   className="secondary-button"
                   onClick={() => go("worker-register")}
                 >
-                  Become a Worker
+                  Join as a Worker
                 </button>
               </div>
 
-              <div className="trust">
+              <div className="hero-trust">
                 <span>✓ Free initial inspection</span>
-                <span>✓ Clear communication</span>
+                <span>✓ Skilled workers</span>
                 <span>✓ WhatsApp support</span>
               </div>
             </div>
 
-            <div className="hero-card">
-              <div className="repair-icon">
-                <span></span>
-              </div>
+            <div className="hero-visual">
+              <div className="visual-glow"></div>
 
-              <div>
-                <small>WEBSITE STATUS</small>
-                <h3>Ready for inspection</h3>
-                <p>
-                  Submit your website problem and
-                  we'll help identify the next step.
-                </p>
+              <div className="system-card">
+                <div className="system-top">
+                  <div>
+                    <small>VICKY WEB FIX</small>
+                    <h3>Website Support</h3>
+                  </div>
+                  <span className="status-pill">
+                    <i></i> Online
+                  </span>
+                </div>
+
+                <div className="system-screen">
+                  <div className="screen-label">
+                    WEBSITE STATUS
+                  </div>
+
+                  <div className="screen-status">
+                    <span className="status-circle">
+                      ✓
+                    </span>
+
+                    <div>
+                      <strong>Ready for inspection</strong>
+                      <p>
+                        Submit your website problem and
+                        we'll identify the next step.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="screen-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                </div>
+
+                <div className="system-bottom">
+                  <span>Customer</span>
+                  <span>→</span>
+                  <span>Vicky Web Fix</span>
+                  <span>→</span>
+                  <span>Worker</span>
+                </div>
               </div>
             </div>
           </section>
 
-          <section className="section">
-            <div className="section-heading">
-              <span className="eyebrow">
-                ONE PLATFORM
-              </span>
-              <h2>
-                Website help meets skilled workers.
-              </h2>
+          <section className="platform-strip">
+            <div>
+              <strong>ONE PLATFORM</strong>
+              <span>Customers</span>
+            </div>
+            <div className="strip-arrow">→</div>
+            <div>
+              <strong>REAL PROJECTS</strong>
+              <span>Website Jobs</span>
+            </div>
+            <div className="strip-arrow">→</div>
+            <div>
+              <strong>SKILLED WORKERS</strong>
+              <span>Remote Opportunities</span>
+            </div>
+            <div className="strip-arrow">→</div>
+            <div>
+              <strong>COMPLETED WORK</strong>
+              <span>Better Websites</span>
+            </div>
+          </section>
+
+          <section className="section intro-section">
+            <div className="section-heading centered">
+              <span className="eyebrow">THE PLATFORM</span>
+              <h2>Website problems meet skilled people.</h2>
               <p>
-                Customers get their website problems
-                handled. Skilled workers get genuine
-                opportunities to work remotely.
+                Whether you need a website fixed or you're
+                looking for opportunities to use your skills,
+                Vicky Web Fix brings both sides together.
               </p>
             </div>
 
-            <div className="cards">
-              <article className="card">
-                <h3>For Customers</h3>
+            <div className="role-cards">
+              <article className="role-card customer-card">
+                <div className="role-number">01</div>
+                <div className="role-icon">◈</div>
+                <span className="eyebrow">FOR CUSTOMERS</span>
+                <h3>Get your website working again.</h3>
                 <p>
-                  Submit a website problem, track the
-                  job and approve the completed work.
+                  Submit your website problem, let the
+                  platform organize the work, and review
+                  the completed result.
                 </p>
+
                 <button
                   className="text-button"
                   onClick={() => {
@@ -720,30 +781,39 @@ function App() {
                     }
                   }}
                 >
-                  Start a Request →
+                  Start a Website Request →
                 </button>
               </article>
 
-              <article className="card">
-                <h3>For Workers</h3>
+              <article className="role-card worker-card">
+                <div className="role-number">02</div>
+                <div className="role-icon">◇</div>
+                <span className="eyebrow">FOR WORKERS</span>
+                <h3>Turn your skills into opportunities.</h3>
                 <p>
-                  Build your worker profile, find
-                  available projects and complete jobs.
+                  Build your worker profile, get approved,
+                  discover available projects and complete
+                  website jobs remotely.
                 </p>
+
                 <button
                   className="text-button"
                   onClick={() => go("worker-register")}
                 >
-                  Join the Network →
+                  Become a Worker →
                 </button>
               </article>
 
-              <article className="card">
-                <h3>For Admins</h3>
+              <article className="role-card admin-card">
+                <div className="role-number">03</div>
+                <div className="role-icon">▣</div>
+                <span className="eyebrow">FOR ADMINS</span>
+                <h3>Keep projects moving.</h3>
                 <p>
-                  Review projects, approve workers,
-                  monitor jobs and manage payout requests.
+                  Review submitted projects, approve workers,
+                  monitor activity and manage the marketplace.
                 </p>
+
                 <button
                   className="text-button"
                   onClick={() => {
@@ -758,122 +828,166 @@ function App() {
             </div>
           </section>
 
-          <section className="section dark-section">
-            <div className="section-heading">
-              <span className="eyebrow">
-                HOW IT WORKS
-              </span>
-              <h2>Two sides. One platform.</h2>
-            </div>
-
-            <div className="steps">
-              <div>
-                <strong>01</strong>
-                <h3>Customer submits</h3>
-                <p>
-                  A website problem is submitted for
-                  review.
-                </p>
-              </div>
-
-              <div>
-                <strong>02</strong>
-                <h3>Admin reviews</h3>
-                <p>
-                  The project is checked before it
-                  becomes available.
-                </p>
-              </div>
-
-              <div>
-                <strong>03</strong>
-                <h3>Worker accepts</h3>
-                <p>
-                  An approved worker takes an available
-                  project.
-                </p>
-              </div>
-
-              <div>
-                <strong>04</strong>
-                <h3>Work is completed</h3>
-                <p>
-                  The customer reviews and approves
-                  the completed work.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          <section className="section">
-            <div className="section-heading">
-              <span className="eyebrow">
-                SERVICES
-              </span>
-              <h2>What we can help with.</h2>
-            </div>
-
-            <div className="cards">
-              <article className="card">
-                <h3>Bug Fixes</h3>
-                <p>
-                  Broken pages, errors, forms and
-                  website functionality.
-                </p>
-              </article>
-
-              <article className="card">
-                <h3>Mobile Fixes</h3>
-                <p>
-                  Responsive problems and mobile
-                  usability issues.
-                </p>
-              </article>
-
-              <article className="card">
-                <h3>Landing Pages</h3>
-                <p>
-                  Clean, modern pages designed around
-                  your goals.
-                </p>
-              </article>
-
-              <article className="card">
-                <h3>Deployment</h3>
-                <p>
-                  Help getting your website online and
-                  working correctly.
-                </p>
-              </article>
-            </div>
-          </section>
-
-          <section className="section callout">
-            <div>
-              <span className="eyebrow">
-                NEED HELP?
-              </span>
-              <h2>
-                Not sure what is wrong?
-              </h2>
+          <section className="section dark-section marketplace-section">
+            <div className="section-heading centered">
+              <span className="eyebrow">HOW IT WORKS</span>
+              <h2>From problem to completed work.</h2>
               <p>
-                Tell us what you're seeing. We'll help
-                you understand the problem before you
-                decide what to do next.
+                A simple workflow designed to keep customers,
+                workers and administrators connected.
               </p>
             </div>
 
-            <button
-              className="primary-button"
-              onClick={() =>
-                whatsapp(
-                  "Hello Vicky Web Fix, I need help with my website."
-                )
-              }
-            >
-              Contact Support
-            </button>
+            <div className="process-grid">
+              <div className="process-step">
+                <span>01</span>
+                <div className="process-line"></div>
+                <h3>Submit</h3>
+                <p>
+                  A customer tells us what is wrong with
+                  their website.
+                </p>
+              </div>
+
+              <div className="process-step">
+                <span>02</span>
+                <div className="process-line"></div>
+                <h3>Review</h3>
+                <p>
+                  The project is checked before becoming
+                  available to approved workers.
+                </p>
+              </div>
+
+              <div className="process-step">
+                <span>03</span>
+                <div className="process-line"></div>
+                <h3>Work</h3>
+                <p>
+                  A qualified worker accepts the project
+                  and completes the requested work.
+                </p>
+              </div>
+
+              <div className="process-step">
+                <span>04</span>
+                <div className="process-line"></div>
+                <h3>Approve</h3>
+                <p>
+                  The customer reviews the completed work
+                  before the project is finalized.
+                </p>
+              </div>
+            </div>
           </section>
+
+          <section className="section services-section">
+            <div className="section-heading">
+              <span className="eyebrow">OUR SERVICES</span>
+              <h2>Built around real website problems.</h2>
+              <p>
+                Get help with the technical issues that
+                keep your website from performing properly.
+              </p>
+            </div>
+
+            <div className="service-grid">
+              <article className="service-card">
+                <span className="service-index">01</span>
+                <h3>Bug Fixes</h3>
+                <p>
+                  Broken pages, errors, forms, buttons and
+                  other website functionality problems.
+                </p>
+              </article>
+
+              <article className="service-card">
+                <span className="service-index">02</span>
+                <h3>Mobile Fixes</h3>
+                <p>
+                  Responsive layouts, mobile usability and
+                  display problems across different screens.
+                </p>
+              </article>
+
+              <article className="service-card">
+                <span className="service-index">03</span>
+                <h3>Landing Pages</h3>
+                <p>
+                  Clean, modern landing pages designed to
+                  communicate your message clearly.
+                </p>
+              </article>
+
+              <article className="service-card">
+                <span className="service-index">04</span>
+                <h3>Deployment</h3>
+                <p>
+                  Help getting your website online,
+                  connected and working correctly.
+                </p>
+              </article>
+            </div>
+          </section>
+
+          <section className="section worker-banner">
+            <div className="worker-banner-content">
+              <span className="eyebrow">FOR SKILLED WORKERS</span>
+              <h2>Your skills deserve real opportunities.</h2>
+              <p>
+                Join the Vicky Web Fix worker network and
+                build your profile around the skills you know.
+              </p>
+
+              <div className="worker-points">
+                <span>✓ Create your profile</span>
+                <span>✓ Get approved</span>
+                <span>✓ Find available projects</span>
+                <span>✓ Complete work remotely</span>
+              </div>
+
+              <button
+                className="primary-button"
+                onClick={() => go("worker-register")}
+              >
+                Become a Worker
+              </button>
+            </div>
+
+            <div className="worker-decoration">
+              <div className="decoration-card">
+                <small>WORKER NETWORK</small>
+                <strong>SKILLS → PROJECTS</strong>
+                <span>Build. Work. Grow.</span>
+              </div>
+            </div>
+          </section>
+
+          <section className="section support-section">
+            <div className="support-box">
+              <div>
+                <span className="eyebrow">NEED HELP?</span>
+                <h2>Not sure what's wrong with your website?</h2>
+                <p>
+                  Tell us what you're seeing. We'll help you
+                  understand the problem and identify the next
+                  step.
+                </p>
+              </div>
+
+              <button
+                className="primary-button"
+                onClick={() =>
+                  whatsapp(
+                    "Hello Vicky Web Fix, I need help with my website."
+                  )
+                }
+              >
+                Contact Support
+              </button>
+            </div>
+          </section>
+
         </main>
       )}
 

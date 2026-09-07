@@ -45,3 +45,5 @@ src/App.css.worker-safe.css
 # Worker dashboard safety backups
 src/App.worker-safe.jsx
 src/App.css.worker-safe.css
+
+src/App.homepage-before-redesign.jsx
