@@ -1130,30 +1130,94 @@ app.post(
         });
       }
 
-      const payoutId = id("PAY");
+      const client = await db.pool.connect();
 
-      const result = await db.query(
-        `
-        INSERT INTO payout_requests
-          (
-            payout_id,
-            worker_id,
-            amount,
-            method,
-            account_details
-          )
-        VALUES
-          ($1, $2, $3, $4, $5)
-        RETURNING *
-        `,
-        [
-          payoutId,
-          req.user.userId,
-          requestedAmount,
-          method.trim(),
-          accountDetails.trim(),
-        ]
-      );
+      try {
+        await client.query("BEGIN");
+
+        const lockedWorker = await client.query(
+          `
+          SELECT total_earnings
+          FROM worker_profiles
+          WHERE user_id = $1
+          FOR UPDATE
+          `,
+          [req.user.userId]
+        );
+
+        if (!lockedWorker.rowCount) {
+          await client.query("ROLLBACK");
+          return res.status(404).json({
+            error: "Worker profile not found.",
+          });
+        }
+
+        const lockedBalance = Number(
+          lockedWorker.rows[0].total_earnings || 0
+        );
+
+        const pendingResult = await client.query(
+          `
+          SELECT COALESCE(SUM(amount), 0) AS pending
+          FROM payout_requests
+          WHERE worker_id = $1
+            AND status IN ('pending', 'processing')
+          `,
+          [req.user.userId]
+        );
+
+        const pendingAmount = Number(
+          pendingResult.rows[0].pending || 0
+        );
+
+        const availableBalance =
+          lockedBalance - pendingAmount;
+
+        if (requestedAmount > availableBalance) {
+          await client.query("ROLLBACK");
+          return res.status(400).json({
+            error:
+              "Requested amount exceeds your available payout balance.",
+          });
+        }
+
+        const payoutId = id("PAY");
+
+        const result = await client.query(
+          `
+          INSERT INTO payout_requests
+            (
+              payout_id,
+              worker_id,
+              amount,
+              method,
+              account_details
+            )
+          VALUES
+            ($1, $2, $3, $4, $5)
+          RETURNING *
+          `,
+          [
+            payoutId,
+            req.user.userId,
+            requestedAmount,
+            method.trim(),
+            accountDetails.trim(),
+          ]
+        );
+
+        await client.query("COMMIT");
+
+        return res.status(201).json({
+          success: true,
+          payout: result.rows[0],
+        });
+      } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+      } finally {
+        client.release();
+      }
 
       res.status(201).json({
         success: true,

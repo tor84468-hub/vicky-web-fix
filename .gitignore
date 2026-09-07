@@ -28,3 +28,5 @@ backend/vicky_web_fix.json
 .env
 .env.*
 !.env.example
+
+backend.build14-backup/
